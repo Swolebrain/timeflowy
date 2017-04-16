@@ -1,11 +1,11 @@
 import Auth0Lock from 'auth0-lock';
-import { browserHistory } from 'react-router';
 
 const APP_URL = 'http://localhost:3000/';
 
 export default class AuthService {
-  constructor(clientId, domain) {
+  constructor(clientId, domain, authCallback) {
     // Configure Auth0
+    this.authCallback = authCallback;
     this.lock = new Auth0Lock(clientId, domain, {
       auth: {
         redirectUrl: APP_URL + 'login',
@@ -22,7 +22,8 @@ export default class AuthService {
     // Saves the user token
     this.setToken(authResult.idToken)
     // navigate to the home route
-    browserHistory.replace('/home')
+    console.log("CALLING AUTH CALLBACK");
+    this.authCallback();
   }
 
   login() {

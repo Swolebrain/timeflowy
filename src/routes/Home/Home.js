@@ -2,23 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AuthService from '../../auth/AuthService';
 
-export class Login extends React.Component {
+export class Home extends React.Component {
   static propTypes = {
     location: PropTypes.object,
     auth: PropTypes.instanceOf(AuthService)
   }
 
   render() {
-    const { auth } = this.props
+    console.log("Rendering home");
     return (
       <div >
-        <h2>Login</h2>
-        <div>
-          <button onClick={auth.login.bind(this)}>Login</button>
-        </div>
+        <h2>Home</h2>
+
       </div>
     )
   }
 }
 
-export default Login;
+export default Home;
