@@ -1,6 +1,23 @@
+import './App.css';
+
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Route, BrowserRouter as Router} from 'react-router-dom';
+
+import { Provider } from 'react-redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+const store = createStore(
+  combineReducers({
+    todos: function(oldstate=[
+      {title: "Live the thug life", subtitle:"s", status: "new", items: [
+        {title: "blaw", subtitle:"fornicate", status: "new", items: [], parent: null},
+        {title: "another test item", subtitle:"de pipi", status: "new", items: [], parent: null}
+      ], parent: null},
+      {title: "shoot", subtitle:"k", status: "new", items: [], parent: null}
+    ], action){
+      return oldstate;
+    }
+  }));
 
 import AuthService from './auth/AuthService';
 import {Home} from './routes/Home';
@@ -28,12 +45,14 @@ class App extends Component {
   }
   get content() {
     return (
-      <Router>
-        <div>
-          <Route exact path="/" render={this.clientSideAuth} />
-          <Route path="/login" render={this.clientSideAuth} />
-        </div>
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <div>
+            <Route exact path="/" render={this.clientSideAuth} />
+            <Route path="/login" render={this.clientSideAuth} />
+          </div>
+        </Router>
+      </Provider>
     )
   }
 
