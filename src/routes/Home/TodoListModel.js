@@ -1,6 +1,8 @@
 export default class TodoListModel{
   constructor(argObj, index=0, parent=null){
-    if (!argObj.title || !argObj.subtitle || !argObj.items || !Array.isArray(argObj.items) || !argObj.status){
+    if ( typeof argObj.title !== 'string' ||
+      typeof argObj.subtitle !== 'string' || !argObj.items
+      || !Array.isArray(argObj.items) || !argObj.status){
       throw new Error("Cannot create a todo list item without all args"+JSON.stringify(argObj));
     }
     for (let key in argObj){
@@ -14,7 +16,7 @@ export default class TodoListModel{
 
     if (!parent) this.route = [index];
     else{
-      console.log(parent.route);
+      //console.log(parent.route);
       this.route = JSON.parse(JSON.stringify(parent.route));
       this.route.push(index);
     }

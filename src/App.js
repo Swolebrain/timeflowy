@@ -5,19 +5,7 @@ import PropTypes from 'prop-types';
 import {Route, BrowserRouter as Router} from 'react-router-dom';
 
 import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-const store = createStore(
-  combineReducers({
-    todos: function(oldstate=[
-      {title: "Live the thug life", subtitle:"s", status: "new", items: [
-        {title: "blaw", subtitle:"fornicate", status: "new", items: [], parent: null},
-        {title: "another test item", subtitle:"de pipi", status: "new", items: [], parent: null}
-      ], parent: null},
-      {title: "shoot", subtitle:"k", status: "new", items: [], parent: null}
-    ], action){
-      return oldstate;
-    }
-  }));
+import store from './redux';
 
 import AuthService from './auth/AuthService';
 import {Home} from './routes/Home';
@@ -37,7 +25,7 @@ class App extends Component {
   static contextTypes = {
     router: PropTypes.object
   }
-  clientSideAuth = (childProps) =>{
+  clientSideAuth = (childProps) => {
     if (this.auth.loggedIn()){
       return <Home {...childProps} auth={this.auth} />
     }
@@ -55,7 +43,6 @@ class App extends Component {
       </Provider>
     )
   }
-
   render () {
      return (
        <div style={{ height: '100vh' }}>

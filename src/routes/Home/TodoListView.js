@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
+import store from '../../redux';
+import {modifyItem, createTodo, indentItem} from '../../redux/actions'
 
 // const width = window.innerWidth;
 // const height = window.innerHeight;
@@ -36,20 +38,41 @@ export default class TodoListView extends Component{
     data: PropTypes.object,
     index: PropTypes.number
   }
+  componentDidMount(){
+    //this.titleInput.focus();
+  }
+  handleKey = (e) => {
+    // console.log(e);
+    if (e.key.toLowerCase() === 'enter'){
+      store.dispatch(createTodo(this.props.data.route));
+    }
+    if (e.key.toLowerCase() === 'tab'){
+      e.preventDefault();
+      store.dispatch(indentItem(this.props.data))
+    }
+  }
   render(){
+    let td = this.props.data;
     return (
       <div style={styles.todoList} className="todo-item">
         <div style={styles.todoItem}>
           <div style={styles.bullet}></div>
           <input
-            onChange={text=>""}
+            id={this.props.inputId}
+            ref={input=>this.titleInput=input}
+            onKeyDown={this.handleKey}
+            onChange={e=>store.dispatch(modifyItem(td.route, e.target.value))}
             style={styles.todoItemInput}
             type="text" value={this.props.data.title} />
         </div>
         <div style={styles.todoSubtitle}>
           {this.props.data.subtitle}
         </div>
-        {this.props.data.items.map((e,i)=> <TodoListView data={e} key={i} index={i} />)}
+        {
+          this.props.data.items.map((e,i)=> <TodoListView
+                                      inputId={e.route.reduce((p, c)=>p+"."+c)}
+                                      data={e} key={i} index={i} />)
+        }
       </div>
     );
   }

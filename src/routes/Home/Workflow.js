@@ -12,7 +12,9 @@ class Workflow extends Component{
     let todos = this.props.todos.map((todo, idx)=> new TodoListModel(todo, idx));
     return (
       <div className="todo-container">
-        {todos.map((todo, i)=><TodoListView data={todo} key={i} index={i} />)}
+        {todos.map((todo, i)=><TodoListView
+            inputId={todo.route.reduce((p, c)=>p+"."+c)}
+            data={todo} key={i} index={i} />)}
       </div>
     );
   }
