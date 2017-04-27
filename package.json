@@ -22,6 +22,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && cp -R ./build/* /var/www/html/timeflowy"
+    "deploy": "npm run build && cp -R /var/timeflowy/build/* /var/www/html/timeflowy"
   }
 }
