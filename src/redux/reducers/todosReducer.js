@@ -10,13 +10,12 @@ let todoData = [
 
 export default function(oldstate=todoData, action){
 
-  let newState, loc;
+  let newState, loc, oldTodo, idx, currentParent;
   switch (action.type){
     case 'INDENT_ITEM':
       newState = JSON.parse(JSON.stringify(oldstate));
       console.log("indenting");
-      let idx = action.location[0];
-      let oldTodo;
+      idx = action.location[0];//[0, 2, 2, 1]
       if (action.indentType === "root"){
         console.log("root indent type");
         oldTodo = newState.splice(idx,1)[0];
@@ -27,20 +26,43 @@ export default function(oldstate=todoData, action){
         console.log("sibling indent type");
         idx = action.location[action.location.length-1];
         if (idx===0) return newState;
-        let currentParent = newState[action.location[0]];
+        currentParent = newState[action.location[0]];
         for (let i = 1; i < action.location.length-1; i++){
           currentParent = currentParent.items[action.location[i]];
         }
         let parent = currentParent;
-        console.log(parent);
-        console.log(action.location);
+        // console.log(parent);
+        // console.log(action.location);
         oldTodo = parent.items.splice(idx, 1)[0];
-        console.log(oldTodo);
+        // console.log(oldTodo);
         parent.items[idx-1].items.push(oldTodo);
       }
       return newState;
     case 'DEINDENT_ITEM':
+      if (action.indentType === "root") return oldstate;
       newState = JSON.parse(JSON.stringify(oldstate));
+      idx = action.location[action.location.length-1];
+
+      // oldTodo = parent.items.splice(idx, 1)[0];
+      // oldTodo.items = parent.items.splice(idx);
+      if (action.location.length === 2){//need to splice directly into state
+        let parentIndex = action.location[0];
+        oldTodo = newState[parentIndex].items.splice(action.location[1],1)[0];
+        oldTodo.items = newState[parentIndex].items.splice(action.location[1]);
+        newState.splice(parentIndex+1, 0, oldTodo);
+        console.log(newState);
+      }
+      else{
+        currentParent = newState[action.location[0]];
+        for (let i = 1; i < action.location.length-2; i++){
+          currentParent = currentParent.items[action.location[i]];
+        }
+        let grandParent = currentParent;
+        let parentInGrandparentIdx = action.location[action.location.length-2]
+        let padre = grandParent.items[parentInGrandparentIdx];
+        oldTodo = padre.items.splice(action.location[action.location.length-1],1)[0];
+        grandParent.items.splice(parentInGrandparentIdx+1, 0, oldTodo);
+      }
       return newState;
     case 'ADD_ITEM':
       //requires action.location and action.data (todoListItem)
@@ -56,18 +78,6 @@ export default function(oldstate=todoData, action){
         let parent = currentParent;
         parent.items.splice(action.insertIndex, 0, action.data);
       }
-      // if (loc.items.length === 0){
-      //   if (loc.parent){
-      //     parent.items.splice(idx, 0, todoData);
-      //
-      //   }
-      //   else{
-      //     newState.splice(idx, 0, todoData);
-      //   }
-      // }
-      // else {
-      //   loc.items.splice(idx, 0, todoData);
-      // }
       return newState;
     case 'MODIFY_ITEM':
       //requires action.location and action.newValue
