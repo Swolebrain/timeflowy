@@ -28,9 +28,9 @@ class App extends Component {
   }
   clientSideAuth = (childProps) => {
     if (this.auth.loggedIn()){
-      return <Home {...childProps} auth={this.auth} />
+      return <Home auth={this.auth} />
     }
-    else return <Login  {...childProps} auth={this.auth} />;
+    else return <Login  auth={this.auth} />;
   }
   get content() {
     return (

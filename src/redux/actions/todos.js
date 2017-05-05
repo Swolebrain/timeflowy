@@ -47,8 +47,38 @@ export function indentItem(todoData){
     indentType,
     data: {title, subtitle, items, status, items}
   }
+  setTimeout(()=>{ //[4, 3, 9, 2, 0]
+    let newRoute = [...loc];
+    newRoute[loc.length-1] = loc[loc.length-1]-1;
+    newRoute.push(0);
+    let idToFocus = newRoute.reduce((p,c, i)=>i===newRoute.length-1?p+"."+c : p+"."+c);
+    document.getElementById(idToFocus).focus();
+  },10);
   return action;
 }
+export function deindentItem(todoData){
+  console.log("deindent item action");
+  let loc = todoData.route;
+  let  {title, subtitle, items, status} = todoData;
+  let indentType = "root";
+  if (loc.length > 1) indentType = "sibling";
+  let action = {
+    type: 'DEINDENT_ITEM',
+    location: loc,
+    indentType,
+    data: {title, subtitle, items, status, items}
+  }
+  setTimeout(()=>{ //[4, 3, 9, 2, 0]
+    let newRoute = [...loc];
+    newRoute.splice(loc.length-1,1);
+    newRoute[newRoute.length-1]++;
+    let idToFocus = newRoute.reduce((p,c, i)=>i===newRoute.length-1?p+"."+c : p+"."+c);
+    console.log(idToFocus);
+    document.getElementById(idToFocus).focus();
+  },10);
+  return action;
+}
+
 
 export function selectTodo(loc){
   let id = loc.reduce((p,c)=>p+"."+c, "");

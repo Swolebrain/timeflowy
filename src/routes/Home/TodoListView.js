@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import store from '../../redux';
-import {modifyItem, createTodo, indentItem} from '../../redux/actions'
+import {modifyItem, createTodo, indentItem, deindentItem} from '../../redux/actions'
 
 // const width = window.innerWidth;
 // const height = window.innerHeight;
@@ -41,14 +41,20 @@ export default class TodoListView extends Component{
   componentDidMount(){
     //this.titleInput.focus();
   }
-  handleKey = (e) => {
+  handleKeyDown = (e) => {
     // console.log(e);
+    // console.log(e.shiftKey);
     if (e.key.toLowerCase() === 'enter'){
       store.dispatch(createTodo(this.props.data.route));
     }
     if (e.key.toLowerCase() === 'tab'){
       e.preventDefault();
-      store.dispatch(indentItem(this.props.data))
+      if (!e.shiftKey){
+        store.dispatch(indentItem(this.props.data));
+      }
+      else{
+        store.dispatch(deindentItem(this.props.data));
+      }
     }
   }
   render(){
@@ -60,7 +66,8 @@ export default class TodoListView extends Component{
           <input
             id={this.props.inputId}
             ref={input=>this.titleInput=input}
-            onKeyDown={this.handleKey}
+            onKeyDown={this.handleKeyDown}
+            onKeyUp={this.handleKeyUp}
             onChange={e=>store.dispatch(modifyItem(td.route, e.target.value))}
             style={styles.todoItemInput}
             type="text" value={this.props.data.title} />

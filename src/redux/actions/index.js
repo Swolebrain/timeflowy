@@ -1,11 +1,13 @@
 import {
   modifyItem,
   createTodo,
-  indentItem
+  indentItem,
+  deindentItem
 } from './todos';
 
 export {
   modifyItem,
   createTodo,
-  indentItem
+  indentItem,
+  deindentItem
 }
