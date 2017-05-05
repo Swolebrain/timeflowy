@@ -15,6 +15,7 @@ import {Login} from './routes/Login';
 class App extends Component {
   constructor(props){
     super(props);
+    console.log("App component constructor");
     this.auth = new AuthService('84N6au0Il1G8eN7irnCyyqcpXkRkMuvH',
                                   'swolebrain.auth0.com',
                                   ()=>{   console.log("auth callback"); this.setState({authenticated: true})  });

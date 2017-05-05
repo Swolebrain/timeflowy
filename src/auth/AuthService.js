@@ -1,6 +1,7 @@
 import Auth0Lock from 'auth0-lock';
 
-const APP_URL = 'http://localhost:3000/';
+const APP_URL = 'http://localhost:3000';
+const BACKEND_URL = 'http://localhost:3001';
 
 export default class AuthService {
   constructor(clientId, domain, authCallback) {
@@ -8,7 +9,7 @@ export default class AuthService {
     this.authCallback = authCallback;
     this.lock = new Auth0Lock(clientId, domain, {
       auth: {
-        redirectUrl: APP_URL + 'login',
+        redirectUrl: APP_URL ,
         responseType: 'token'
       }
     })
@@ -22,8 +23,26 @@ export default class AuthService {
     // Saves the user token
     this.setToken(authResult.idToken)
     // navigate to the home route
-    console.log("CALLING AUTH CALLBACK");
-    this.authCallback();
+    //fetch user's todos from server
+    //will need a redux action to hydrate todos
+    //hit the authcallback at the end of the promise chain
+    console.log(authResult);
+    fetch(BACKEND_URL+'/load-todos',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept' : 'application/json'
+      },
+      body: JSON.stringify(authResult),
+    }).then(res=>{
+      console.log(res);
+      return res.json();
+    })
+    .then(resContent=>{
+      console.log(resContent);
+      console.log("CALLING AUTH CALLBACK");
+      this.authCallback();
+    });
   }
 
   login() {
